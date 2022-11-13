@@ -51,6 +51,8 @@ def get_ip(ip_type, index="default"):
                 break
     elif str(index).isdigit():  # 数字 local eth
         value = getattr(ip, "local_v" + ip_type)(index)
+    elif index.startswith('nic:'):  # network interface
+        value = getattr(ip, "local_nic_v" + ip_type)(index[4:])
     elif index.startswith('cmd:'):  # cmd
         value = str(check_output(index[4:]).strip().decode('utf-8'))
     elif index.startswith('shell:'):  # shell

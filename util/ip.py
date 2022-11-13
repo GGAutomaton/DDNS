@@ -3,6 +3,7 @@
 from re import compile
 from os import name as os_name, popen
 from socket import socket, getaddrinfo, gethostname, AF_INET, AF_INET6, SOCK_DGRAM
+import netifaces as ni
 from logging import debug, error
 try:
     # python2
@@ -44,6 +45,26 @@ def local_v4(i=0):  # 本地ipv4地址
     info = getaddrinfo(gethostname(), 0, AF_INET)
     debug(info)
     return info[int(i)][-1][0]
+
+
+def local_nic_v6(nic_name):  # 本地网卡ipv6地址
+    info = None
+    try:
+        info = ni.ifaddresses(nic_name)[ni.AF_INET6][0]['addr']
+        debug(info)
+    except Exception as e:
+        error('Fail to get %s ipv6 address!', nic_name)
+    return info
+
+
+def local_nic_v4(nic_name):  # 本地网卡ipv4地址
+    info = None
+    try:
+        info = ni.ifaddresses(nic_name)[ni.AF_INET][0]['addr']
+        debug(info)
+    except Exception as e:
+        error('Fail to get %s ipv4 address!', nic_name)
+    return info
 
 
 def _open(url, reg):
